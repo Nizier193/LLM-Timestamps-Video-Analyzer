@@ -69,23 +69,27 @@ Subtitles:
                 
     return "\n\n".join(analysis_fragments)
 
+class Fragment(BaseModel):
+    start_timecode: float
+    end_timecode: float
+    title: str
+
+class InterestingMoments(BaseModel):
+    fragments: List[Fragment]
+
 class VideoAnalysisBySubtitles():
-    # TODO: Rewrite prompt to be more clear and more functional
     analysis_prompt = """
 Ты - ассистент, который анализирует видео и субтитры.
+Выбери ТРИ самых интересных фрагмента из видео по приведенным фрагментам анализа.
 
-Тебе нужно выбрать ТРИ самых интересных фрагмента из видео и дать оценку на интересность от 1 до 5.
+При выборе фрагмента следуй правилам:
+1. Аккуратно обращайся с таймкодами, они должны быть МАКСИМАЛЬНО точными.
+2. Ты можешь выбирать таймкоды только по субтитрам, иначе выбери видеофрагмент.
+3. Итоговый фрагмент не должен быть длиннее 1 минуты.
+4. Таймкоды фрагментов должны включать полные предложения.
+5. Если можно объединить несколько фрагментов в один для получения более интересного фрагмента - объединяй.
 
-Правила к выбору фрагментов:
-* Если есть видео и субтитры - отдаём приоритет видео с субтитрами
-* Если есть субтитры, но нет видео - отдаём приоритет субтитров
-* Если есть красивое видео - отдаём приоритет видео
-
-Ты можешь и должен объединять субтитры для видео, если это сделает видео более интересным.
-Не делай видео более минуты.
-
-ЕСЛИ ЕСТЬ СУБТИТРЫ ОБРЕЗАТЬ ТОЛЬКО ПО НИМ
-МОЖНО ОБРЕЗАТЬ ВИДЕО
+Выведи ответ в формате JSON.
     """
 
     def __init__(self, video_interval: int = 10, resize_factor: int = 30):
@@ -209,14 +213,14 @@ class VideoAnalysisBySubtitles():
                 },
                 {
                     "role": "user",
-                    "content": analysis_text
+                    "content": f"Here is the analysis data: \n{analysis_text}"
                 }
             ],
             response_format=InterestingMoments
         )
 
         analysis = completion.choices[0].message.content
-        json_file = json.dumps(analysis)
+        json_file = json.loads(analysis)
 
         with open(output_json_interesting_moments, 'w', encoding='utf-8') as output_file:
             json.dump(json_file, output_file, ensure_ascii=False, indent=4)
