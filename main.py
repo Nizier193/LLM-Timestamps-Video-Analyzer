@@ -5,222 +5,92 @@ import io
 from datetime import timedelta
 from typing import List
 
-from dotenv import load_dotenv
+from pydantic import BaseModel
 from openai import OpenAI
+
+from dotenv import load_dotenv
 from PIL import Image
 import cv2
 import ffmpeg
 
 from uuid import uuid4
 
+from settings import Source
+
+from image_analysis import ImageAnalysis
+from video_analysis import VideoAnalysis
+from subtitle_analysis import SubtitlesAnalysis
+from settings import InterestingMoments
+
 load_dotenv()
 
-# Анализ картинки с соотнесением к предыдущему кадру
-# Выдаёт описание картинки без таймкодов
-class ImageAnalysis():
-    analysis_prompt = """
-Ты - ассистент, который анализирует картинку и предполагает, что на ней происходит.
-Фрагмент взят из большого видео.
-
-Ты должен предположить, что изображено на картинке в формате:
-- Ситуация
-- Действующие лица (если есть)
-- Чем интересен кадр? Если нет чего-то интересного, то не упоминай это.
-- Какие действия происходят в соотнесении с предыдущим кадром, если есть.
-
-Описание предыдущего кадра:
-<scene>
-{scene}
-</scene>
-
-Ответ не более 3 предложений, которые должны включать в себя все перечисленные пункты.
-
-
-НЕ ВКЛЮЧАЙ В ОТВЕТ ДРУГИХ РАССУЖДЕНИЙ ИЛИ МЫСЛЕЙ
-НЕ ДЕЛАЙ ОТВЕТ ОЧЕНЬ БОЛЬШИМ
-ОТВЕТ НА РУССКОМ ЯЗЫКЕ
+def format_analysis_text(concat_analysis, start_fragment: int = 1, n_fragments: int = 20):
+    analysis_template = """
+Fragment {index}:
+{separator}
+Video: {video_start} --> {video_end}
+---
+{video_analysis}
+---
+Subtitles:
+{subtitles}
 """
-
-    def __init__(self, api_key: str = None, resize_factor: int = 10):
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.client = OpenAI(api_key=self.api_key)
-        self.resize_factor = resize_factor
-
-    def resize_image(self, image: Image.Image) -> Image.Image:
-        """
-        Параметр resize_factor отвечает за уменьшение изображения.
-        Этот параметр нужен для уменьшения затрат на обработку изображения.
-        """
-
-        width, height = image.size
-        new_size = (width // self.resize_factor, height // self.resize_factor)
-        new_image = image.resize(new_size, Image.LANCZOS)
-        return new_image
-
-    def encode_image(self, image: Image.Image) -> str:
-        buffered = io.BytesIO()
-        image.save(buffered, format="JPEG")
-        return base64.b64encode(buffered.getvalue()).decode('utf-8')
-
-    def analyze(self, image: Image.Image, scene: str = None) -> str:
-        """
-        Анализ картинки с соотнесением к предыдущему кадру.
-        scene - предыдущий кадр, по умолчанию None.
-        """
-
-        resized_image = self.resize_image(image)
-        base64_image = self.encode_image(resized_image)
-
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {
-                    "role": "system",
-                    "content": self.analysis_prompt.format(scene=scene)
-                },
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/jpeg;base64,{base64_image}"
-                            },
-                        },
-                    ],
-                }
-            ],
-            max_tokens=300,
-        )
-        return response.choices[0].message.content
     
-
-class VideoAnalysis():
-    """
-    Анализ видео.
-    Берёт кадры из видео и анализирует их.
-    """
-    def __init__(self, video_path: str, image_analysis: ImageAnalysis, interval_seconds: int = 1):
-        self.video_path = video_path
-        self.image_analysis = image_analysis
-        self.interval_seconds = interval_seconds
-
-    def analyze(self, output_json: str) -> List[dict]:
-        cap = cv2.VideoCapture(self.video_path)
-        fps = cap.get(cv2.CAP_PROP_FPS)
-        frame_step = int(fps * self.interval_seconds)  # Calculate frame_step based on interval_seconds
-        frame_count = 0
-        previous_scene = None
-        analysis_results = []
-
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
-
-            if frame_count % frame_step == 0:
-                # Преобразуем кадр из BGR (OpenCV) в RGB (PIL)
-                rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                pil_image = Image.fromarray(rgb_frame)
-
-                # Анализируем кадр
-                analysis = self.image_analysis.analyze(pil_image, scene=previous_scene)
-                
-                # Формируем таймкоды
-                start_time = self.format_timecode(frame_count / fps)
-                end_time = self.format_timecode((frame_count + frame_step) / fps)
-
-                # Добавляем результат анализа в список
-                analysis_results.append({
-                    "start_timecode": start_time,
-                    "end_timecode": end_time,
-                    "analysis": analysis
-                })
-
-                previous_scene = analysis
-
-            frame_count += 1
-
-        cap.release()
-
-        # Сохраняем результаты анализа в JSON файл
-        with open(output_json, 'w', encoding='utf-8') as json_file:
-            json.dump(analysis_results, json_file, ensure_ascii=False, indent=4)
-
-        return analysis_results
-
-    @staticmethod
-    def format_timecode(seconds: float) -> str:
-        """Форматирует время в секундах в формат SRT таймкода."""
-        td = timedelta(seconds=seconds)
-        hours, remainder = divmod(td.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        milliseconds = td.microseconds // 1000
-        return f"{hours:02d}:{minutes:02d}:{seconds:02d},{milliseconds:03d}"
+    separator = '=' * 40
     
-class SubtitlesAnalysis():
-    """
-    Анализ субтитров.
-    Берёт субтитры и анализирует их.
-    """
-
-    def get_audio(self, video_path: str) -> str:
-        """
-        Извлекает аудиодорожку из видеофайла в формате ogg.
-        """
-        output_path = video_path.rsplit('.', 1)[0] + '.ogg'
+    analysis_fragments = []
+    for index, item in enumerate(concat_analysis[start_fragment - 1:start_fragment+n_fragments], start_fragment):
+        video = item["video_analysis"]
+        subtitles = item["subtitles_analysis"]
         
-        try:
-            (
-                ffmpeg
-                .input(video_path)
-                .output(output_path, acodec='libvorbis', audio_bitrate='128k')
-                .overwrite_output()
-                .run(capture_stdout=True, capture_stderr=True)
+        if subtitles:
+            subtitles_text = "\n".join(
+                "{start} --> {end}: {text}".format(
+                    start=sub['start_timecode'],
+                    end=sub['end_timecode'],
+                    text=sub['subtitle']
+                ) for sub in subtitles
             )
-            return output_path
-        except ffmpeg.Error as e:
-            print(f'Error occurred: {e.stderr.decode()}')
-            return None
-
-    def analyze(self, output_json: str) -> List[dict]:
-        audio_path = self.get_audio(self.video_path)
-        # // TODO: Добавить анализ субтитров 
-
-        analysis_results = [
-            {
-                "start_timecode": "00:00:00,000",
-                "end_timecode": "00:00:00,000",
-                "analysis": "Анализ субтитров"
-            }
-        ]
-
-        with open(output_json, 'w', encoding='utf-8') as json_file:
-            json.dump(analysis_results, json_file, ensure_ascii=False, indent=4)
-
-        return analysis_results
+        else:
+            subtitles_text = "No subtitles for this fragment."
+        
+        fragment = analysis_template.format(
+            index=index,
+            separator=separator,
+            video_start=video['start_timecode'],
+            video_end=video['end_timecode'],
+            video_analysis=video['analysis'],
+            subtitles=subtitles_text
+        )
+        analysis_fragments.append(fragment)
+                
+    return "\n\n".join(analysis_fragments)
 
 class VideoAnalysisBySubtitles():
-    """
-    Анализ видео по субтитрам.
-    Берёт фрагменты, которые содержат субтитры, и анализирует их.
-    Субтитры должны содержать таймкоды, иначе анализ не будет работать.
+    # TODO: Rewrite prompt to be more clear and more functional
+    analysis_prompt = """
+Ты - ассистент, который анализирует видео и субтитры.
 
-    ImageAnalysis - класс, который анализирует изображение.
-    VideoAnalysis - класс, который анализирует видео.
-    VideoAnalysisBySubtitles - класс, который анализирует субтитры по таймкодам и добавляет эти субтитры в .srt файл анализа видео.
+Тебе нужно выбрать ТРИ самых интересных фрагмента из видео и дать оценку на интересность от 1 до 5.
+
+Правила к выбору фрагментов:
+* Если есть видео и субтитры - отдаём приоритет видео с субтитрами
+* Если есть субтитры, но нет видео - отдаём приоритет субтитров
+* Если есть красивое видео - отдаём приоритет видео
+
+Ты можешь и должен объединять субтитры для видео, если это сделает видео более интересным.
+Не делай видео более минуты.
+
+ЕСЛИ ЕСТЬ СУБТИТРЫ ОБРЕЗАТЬ ТОЛЬКО ПО НИМ
+МОЖНО ОБРЕЗАТЬ ВИДЕО
     """
+
     def __init__(self):
         self.video_analysis = VideoAnalysis(
-            video_path="source/example.mp4", 
-            image_analysis=ImageAnalysis(
-                resize_factor=10
-            ), 
-            interval_seconds=5
+            interval_seconds=10,
+            resize_factor=30
         )
-        self.subtitles_analysis = SubtitlesAnalysis(
-            video_path="source/example.mp4",
-        )
+        self.subtitles_analysis = SubtitlesAnalysis()
 
     def video_subtitles_concat(self, video_analysis_json: str, subtitles_json: str, output_json: str) -> None:
         # Чтение JSON файлов с анализом видео и субтитрами
@@ -263,12 +133,58 @@ class VideoAnalysisBySubtitles():
         seconds, milliseconds = seconds.split(',')
         return int(hours) * 3600 + int(minutes) * 60 + int(seconds) + int(milliseconds) / 1000
 
-    def analyze(self, output_dir: str) -> None:
+    def local_analysis(self, output_dir: str, video_path: str) -> None:
         uuid = str(uuid4())
         os.makedirs(output_dir, exist_ok=True)
 
-        subtitles = self.subtitles_analysis.analyze(output_json=f"{output_dir}/{uuid}-subtitles.json")  
-        video = self.video_analysis.analyze(output_json=f"{output_dir}/{uuid}-video.json")  
+        video_analysis = self.video_analysis.run(
+            source=Source.Local,
+            video_path=video_path,
+            output_json=f"{output_dir}/{uuid}-video.json"
+        )
+
+        subtitles_analysis = self.subtitles_analysis.run(
+            source=Source.Local,
+            video_path=video_path,
+            output_json=f"{output_dir}/{uuid}-subtitles.json"
+        )
+
+        return uuid
+
+    def youtube_analysis(self, output_dir: str, youtube_video_url: str) -> None:
+        uuid = str(uuid4())
+        os.makedirs(output_dir, exist_ok=True)
+
+        video_analysis = self.video_analysis.run(
+            output_json=f"{output_dir}/{uuid}-video.json",
+            source=Source.Youtube,
+            youtube_video_url=youtube_video_url
+        )
+
+        audio_analysis = self.subtitles_analysis.run(
+            output_json=f"{output_dir}/{uuid}-subtitles.json",
+            source=Source.Youtube,
+            youtube_video_url=youtube_video_url
+        )
+
+        return uuid
+
+    def run(self, 
+            output_dir: str, 
+            source: str = Source.Local, 
+            video_path: str = None, 
+            youtube_video_url: str = None) -> None:
+        
+        if source == Source.Local:
+            uuid = self.local_analysis(output_dir, video_path)
+        elif source == Source.Youtube:
+            uuid = self.youtube_analysis(output_dir, youtube_video_url)
+        else:
+            raise ValueError(f"Invalid source: {source}")
+            
+        output_json_video = f"{output_dir}/{uuid}-video.json"
+        output_json_subtitles = f"{output_dir}/{uuid}-subtitles.json"
+        output_json_concat = f"{output_dir}/{uuid}-concat.json"
 
         analysis = self.video_subtitles_concat(
             video_analysis_json=f"{output_dir}/{uuid}-video.json",
@@ -276,14 +192,22 @@ class VideoAnalysisBySubtitles():
             output_json=f"{output_dir}/{uuid}-concat.json"
         )
 
-        # // TODO: Добавить общий анализ + оценку на вирусность
+        concat_analysis = json.load(open(output_json_concat, 'r', encoding='utf-8'))
+        analysis_text = format_analysis_text(concat_analysis)
 
-        return {
-            "analysis": analysis,
-            "subtitles": subtitles,
-            "video": video
-        }
+        completion = self.client.beta.chat.completions.parse(
+            model="gpt-4o-2024-08-06",
+            messages=[
+                {
+                    "role": "system",
+                    "content": self.analysis_prompt
+                },
+                {
+                    "role": "user",
+                    "content": analysis_text
+                }
+            ],
+            response_format=InterestingMoments
+        )
 
-
-analyzer = VideoAnalysisBySubtitles()
-analyzer.analyze(output_dir="output")
+        return completion.choices[0].message.parsed

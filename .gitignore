@@ -2,3 +2,6 @@ source/*
 
 .env
 .venv
+
+input_files/
+__pycache__/
