@@ -20,7 +20,7 @@ from settings import Source
 from image_analysis import ImageAnalysis
 from video_analysis import VideoAnalysis
 from subtitle_analysis import SubtitlesAnalysis
-from settings import InterestingMoments
+from moviepy.editor import VideoFileClip
 
 import yt_dlp
 from pathlib import Path
@@ -176,6 +176,27 @@ class VideoAnalysisBySubtitles():
         )
 
         return uuid
+    
+
+    def crop_video(self, video_path: str, start_timecode: float, end_timecode: float, output_path: str) -> None:
+        try:
+            # Загружаем видео
+            video = VideoFileClip(video_path)
+            
+            # Обрезаем видео
+            cropped_video = video.subclip(start_timecode, end_timecode)
+            
+            # Сохраняем обрезанное видео
+            cropped_video.write_videofile(output_path)
+            
+            # Закрываем видео файлы
+            video.close()
+            cropped_video.close()
+            
+            print(f"Video cropped successfully: {output_path}")
+        except Exception as e:
+            print(f"An error occurred while cropping video: {str(e)}")
+        
 
     def run(self, 
             output_dir: str, 
@@ -219,8 +240,20 @@ class VideoAnalysisBySubtitles():
             response_format=InterestingMoments
         )
 
+        completion_tokens = completion.usage.completion_tokens
+        prompt_tokens = completion.usage.prompt_tokens
+        total_tokens = completion.usage.total_tokens
+
         analysis = completion.choices[0].message.content
         json_file = json.loads(analysis)
+
+        for fragment in json_file['fragments']:
+            self.crop_video(
+                video_path=video_path,
+                start_timecode=fragment['start_timecode'],
+                end_timecode=fragment['end_timecode'],
+                output_path=f"{output_dir}/{uuid}-{fragment['title']}.mp4"
+            )
 
         with open(output_json_interesting_moments, 'w', encoding='utf-8') as output_file:
             json.dump(json_file, output_file, ensure_ascii=False, indent=4)

@@ -3,8 +3,8 @@ source/*
 .env
 .venv
 
-input_files/
-__pycache__/
+input_files
+__pycache__
 
-tmp/
-test_output/
+tmp
+test_output

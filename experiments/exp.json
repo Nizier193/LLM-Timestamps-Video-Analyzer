@@ -1,0 +1,66 @@
+[
+    {
+        "Black_and_White_Parameter": false,
+        "Resize_Factor_Parameter": 5,
+        "completion_tokens": 47,
+        "prompt_tokens": 488,
+        "total_tokens": 535,
+        "analysis": "Собака с высунутым языком смотрит в камеру. Ретривер выглядит довольным и здоровым. Кадр интересен тем, что передает радость и дружелюбие животного."
+    },
+    {
+        "Black_and_White_Parameter": false,
+        "Resize_Factor_Parameter": 10,
+        "completion_tokens": 52,
+        "prompt_tokens": 488,
+        "total_tokens": 540,
+        "analysis": "Собака породы золотистый ретривер сидит на улице. Собака выглядит радостной, с высунутым языком. Кадр интересен тем, что демонстрирует счастливого питомца на свежем воздухе."
+    },
+    {
+        "Black_and_White_Parameter": false,
+        "Resize_Factor_Parameter": 50,
+        "completion_tokens": 52,
+        "prompt_tokens": 488,
+        "total_tokens": 540,
+        "analysis": "Показан крупный план собаки с открытой пастью и высунутым языком. Сцена передает ощущение радости и активности животного. Съемка фокусируется на эмоциях и выражении морды собаки."
+    },
+    {
+        "Black_and_White_Parameter": false,
+        "Resize_Factor_Parameter": 100,
+        "completion_tokens": 37,
+        "prompt_tokens": 488,
+        "total_tokens": 525,
+        "analysis": "Собака лежит на пляже, возможно, отдыхая или наблюдая за чем-то. Этот кадр интересен тем, что передает атмосферу спокойствия и отдыха."
+    },
+    {
+        "Black_and_White_Parameter": false,
+        "Resize_Factor_Parameter": 500,
+        "completion_tokens": 22,
+        "prompt_tokens": 488,
+        "total_tokens": 510,
+        "analysis": "Экран полностью заполнен градиентом коричневого цвета. Интересного кадра нет."
+    },
+    {
+        "Black_and_White_Parameter": true,
+        "Resize_Factor_Parameter": 5,
+        "completion_tokens": 56,
+        "prompt_tokens": 488,
+        "total_tokens": 544,
+        "analysis": "На изображении показана морда большой собаки, высунувшей язык. Собака выглядит спокойной и дружелюбной. Кадр интересен тем, что собака находится в центре внимания и запечатлена крупным планом с выражением радости."
+    },
+    {
+        "Black_and_White_Parameter": true,
+        "Resize_Factor_Parameter": 100,
+        "completion_tokens": 16,
+        "prompt_tokens": 488,
+        "total_tokens": 504,
+        "analysis": "Неизвестная сцена. Изображено грубое пятно."
+    },
+    {
+        "Black_and_White_Parameter": true,
+        "Resize_Factor_Parameter": 500,
+        "completion_tokens": 54,
+        "prompt_tokens": 488,
+        "total_tokens": 542,
+        "analysis": "Изображение показывает однотонный серый градиент, переходящий от более светлого оттенка внизу к более темному вверху. Кадр выполнен в минималистичном стиле и не содержит других элементов или действующих лиц."
+    }
+]

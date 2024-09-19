@@ -32,10 +32,14 @@ class ImageAnalysis():
 ОТВЕТ НА РУССКОМ ЯЗЫКЕ
 """
 
-    def __init__(self, api_key: str = None, resize_factor: int = 10):
+    def __init__(self, api_key: str = None, resize_factor: int = 10, black_and_white: bool = False):
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.client = OpenAI(api_key=self.api_key)
         self.resize_factor = resize_factor
+        self.black_and_white = black_and_white
+
+    def convert_to_black_and_white(self, image: Image.Image) -> Image.Image:
+        return image.convert("L")
 
     def resize_image(self, image: Image.Image) -> Image.Image:
         """
@@ -60,6 +64,10 @@ class ImageAnalysis():
         """
 
         resized_image = self.resize_image(image)
+
+        if self.black_and_white:
+            resized_image = self.convert_to_black_and_white(resized_image)
+
         base64_image = self.encode_image(resized_image)
 
         response = self.client.chat.completions.create(
@@ -83,4 +91,10 @@ class ImageAnalysis():
             ],
             max_tokens=300,
         )
+
+        completion_tokens = response.usage.completion_tokens
+        prompt_tokens = response.usage.prompt_tokens
+        total_tokens = response.usage.total_tokens
+
         return response.choices[0].message.content
+    

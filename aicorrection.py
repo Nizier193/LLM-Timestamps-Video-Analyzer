@@ -51,6 +51,10 @@ You must correct the words in the subtitles if they do not exist in the Russian 
             ],
             response_format=Subtitles
         )
+        
+        completion_tokens = response.usage.completion_tokens
+        prompt_tokens = response.usage.prompt_tokens
+        total_tokens = response.usage.total_tokens
 
         analysis = response.choices[0].message.content
         parsed_response_content = json.loads(analysis)
