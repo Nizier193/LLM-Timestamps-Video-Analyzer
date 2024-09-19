@@ -88,12 +88,13 @@ class VideoAnalysisBySubtitles():
 МОЖНО ОБРЕЗАТЬ ВИДЕО
     """
 
-    def __init__(self):
+    def __init__(self, video_interval: int = 10, resize_factor: int = 30):
         self.video_analysis = VideoAnalysis(
-            interval_seconds=10,
-            resize_factor=30
+            interval_seconds=video_interval,
+            resize_factor=resize_factor
         )
         self.subtitles_analysis = SubtitlesAnalysis()
+        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     def video_subtitles_concat(self, video_analysis_json: str, subtitles_json: str, output_json: str) -> None:
         # Чтение JSON файлов с анализом видео и субтитрами
@@ -110,9 +111,9 @@ class VideoAnalysisBySubtitles():
             va_end = self.timecode_to_seconds(va["end_timecode"])
             
             matching_subtitles = []
-            for st in subtitles_analysis:
-                st_start = self.timecode_to_seconds(st["start_timecode"])
-                st_end = self.timecode_to_seconds(st["end_timecode"])
+            for st in subtitles_analysis["subtitles"]:
+                st_start = st["start_timecode"]
+                st_end = st["end_timecode"]
                 
                 # Проверка на частичное совпадение таймкодов
                 if (va_start <= st_start <= va_end) or (va_start <= st_end <= va_end) or (st_start <= va_start <= st_end):
@@ -188,6 +189,7 @@ class VideoAnalysisBySubtitles():
         output_json_video = f"{output_dir}/{uuid}-video.json"
         output_json_subtitles = f"{output_dir}/{uuid}-subtitles.json"
         output_json_concat = f"{output_dir}/{uuid}-concat.json"
+        output_json_interesting_moments = f"{output_dir}/{uuid}-interesting_moments.json"
 
         analysis = self.video_subtitles_concat(
             video_analysis_json=f"{output_dir}/{uuid}-video.json",
@@ -213,30 +215,10 @@ class VideoAnalysisBySubtitles():
             response_format=InterestingMoments
         )
 
-        return completion.choices[0].message.parsed
-    
+        analysis = completion.choices[0].message.content
+        json_file = json.dumps(analysis)
 
-def yt_download(yt_vid_url: str, mp4_dir_save_path: str) -> str:
-    # Create the directory if it doesn't exist
-    os.makedirs(mp4_dir_save_path, exist_ok=True)
+        with open(output_json_interesting_moments, 'w', encoding='utf-8') as output_file:
+            json.dump(json_file, output_file, ensure_ascii=False, indent=4)
 
-    ydl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-        'outtmpl': os.path.join(mp4_dir_save_path, '%(title)s.%(ext)s'),
-        'restrictfilenames': True,
-    }
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(yt_vid_url, download=False)
-        filename = ydl.prepare_filename(info)
-        ydl.download([yt_vid_url])
-
-    video_file = Path(filename)
-
-    # Ensure the file has a .mp4 extension
-    if not video_file.suffix == '.mp4':
-        new_video_file = video_file.with_suffix('.mp4')
-        video_file.rename(new_video_file)
-        video_file = new_video_file
-
-    return str(video_file)
+        return json_file

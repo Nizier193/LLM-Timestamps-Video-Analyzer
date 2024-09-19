@@ -5,3 +5,6 @@ source/*
 
 input_files/
 __pycache__/
+
+tmp/
+test_output/

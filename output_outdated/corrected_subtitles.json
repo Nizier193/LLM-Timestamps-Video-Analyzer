@@ -1,0 +1,16 @@
+{
+    "subtitles": [
+        {
+            "start_timecode": 0.62,
+            "end_timecode": 4.52,
+            "subtitle": "Здравствуйте! Меня зовут Никита, и я прибыл к вам из Рязани.",
+            "confidence": 0.73
+        },
+        {
+            "start_timecode": 4.52,
+            "end_timecode": 5.02,
+            "subtitle": "области.",
+            "confidence": 0.8
+        }
+    ]
+}

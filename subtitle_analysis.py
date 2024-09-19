@@ -4,10 +4,13 @@ from pydantic import BaseModel
 
 from settings import Source
 from settings import OUTPUT_FILES
+from stt import WhisperSTT
 
 import re
 
 from youtube_transcript_api import YouTubeTranscriptApi
+from pydub import AudioSegment
+from aicorrection import AICorrection
 
 import ffmpeg
 import json
@@ -64,22 +67,14 @@ class SubtitlesAnalysis():
     """
 
     def get_audio(self, video_path: str) -> str:
-        """
-        Извлекает аудиодорожку из видеофайла в формате ogg.
-        """
-        output_path = video_path.rsplit('.', 1)[0] + '.ogg'
+        output_path = video_path.rsplit('.', 1)[0] + '.mp3'
         
         try:
-            (
-                ffmpeg
-                .input(video_path)
-                .output(output_path, acodec='libvorbis', audio_bitrate='128k')
-                .overwrite_output()
-                .run(capture_stdout=True, capture_stderr=True)
-            )
+            audio = AudioSegment.from_file(video_path, format="mp4")
+            audio.export(output_path, format="mp3")
             return output_path
-        except ffmpeg.Error as e:
-            print(f'Error occurred: {e.stderr.decode()}')
+        except Exception as e:
+            print(f'Error occurred: {str(e)}')
             return None
         
     def get_youtube_subtitles(self, youtube_video_url: str):
@@ -93,19 +88,19 @@ class SubtitlesAnalysis():
     def get_local_subtitles(self, video_path: str):
         audio_path = self.get_audio(video_path)
 
-        subtitles = {
-            "start_timecode": "00:00:00,000",
-            "end_timecode": "00:00:00,000",
-            "analysis": "Анализ субтитров"
-        }
+        extractor = WhisperSTT("tiny")
+        transcript = extractor.get_transcript_v2(
+            audio_path=audio_path,
+            n_words_chunk=10
+        )
 
-        return subtitles
+        return transcript
 
     def AI_analysis(self, subtitles: List[dict]):
-        # No logic yet
-        # AI Analysis works weird
+        corrector = AICorrection()
+        corrected_subtitles = corrector.run(subtitles)
 
-        return subtitles
+        return corrected_subtitles
 
     def run(self, output_json: str, source: str = Source.Local, video_path: str = None, youtube_video_url: str = None) -> List[dict]:
         """

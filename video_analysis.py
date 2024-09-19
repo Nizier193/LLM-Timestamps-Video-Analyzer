@@ -35,9 +35,10 @@ class VideoAnalysis():
             resize_factor=resize_factor
         )
         self.interval_seconds = interval_seconds
+        print("[VideoAnalysis] - [__init__] - Initialized VideoAnalysis class")
 
     def yt_download(self, yt_vid_url: str, mp4_dir_save_path: str) -> str:
-        # Create the directory if it doesn't exist
+        print(f"[VideoAnalysis] - [yt_download] - Downloading video from {yt_vid_url}")
         os.makedirs(mp4_dir_save_path, exist_ok=True)
 
         ydl_opts = {
@@ -59,6 +60,7 @@ class VideoAnalysis():
             video_file.rename(new_video_file)
             video_file = new_video_file
 
+        print(f"[VideoAnalysis] - [yt_download] - Downloaded video to {video_file}")
         return str(video_file)  # Return path to file
 
     def run(self, 
@@ -66,16 +68,18 @@ class VideoAnalysis():
             source: str = Source.Local, 
             video_path: str = None, 
             youtube_video_url: str = None) -> List[dict]:
-        # works ok
+        print(f"[VideoAnalysis] - [run] - Starting video analysis with source: {source}")
 
         if source == Source.Local:
             cap = cv2.VideoCapture(video_path)
+            print(f"[VideoAnalysis] - [run] - Opened local video file: {video_path}")
         elif source == Source.Youtube:
             video_path = self.yt_download(
                 youtube_video_url,
                 mp4_dir_save_path=OUTPUT_FILES
             )
             cap = cv2.VideoCapture(video_path)
+            print(f"[VideoAnalysis] - [run] - Downloaded and opened YouTube video file: {video_path}")
         else:
             raise ValueError(f"Invalid source: {source}")
         
@@ -88,6 +92,7 @@ class VideoAnalysis():
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
+                print("[VideoAnalysis] - [run] - End of video reached or cannot read frame")
                 break
 
             if frame_count % frame_step == 0:
@@ -109,15 +114,19 @@ class VideoAnalysis():
                     "analysis": analysis
                 })
 
+                print(f"[VideoAnalysis] - [run] - Analyzed frame at {start_time} to {end_time}")
+
                 previous_scene = analysis
 
             frame_count += 1
 
         cap.release()
+        print("[VideoAnalysis] - [run] - Released video capture")
 
         # Сохраняем результаты анализа в JSON файл
         with open(output_json, 'w', encoding='utf-8') as json_file:
             json.dump(analysis_results, json_file, ensure_ascii=False, indent=4)
+            print(f"[VideoAnalysis] - [run] - Saved analysis results to {output_json}")
 
         return analysis_results
 

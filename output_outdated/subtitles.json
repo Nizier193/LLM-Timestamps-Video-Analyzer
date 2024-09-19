@@ -1,0 +1,52 @@
+{
+    "subtitles": [
+        {
+            "start_timecode": 0.62,
+            "end_timecode": 4.52,
+            "subtitle": "Здравствуйте! Меня зовут Никита и я прибыл к вам из Рязани.",
+            "confidence": 0.7276
+        },
+        {
+            "start_timecode": 4.52,
+            "end_timecode": 5.02,
+            "subtitle": "области.",
+            "confidence": 0.802
+        },
+        {
+            "start_timecode": 6.0,
+            "end_timecode": 11.46,
+            "subtitle": "38 лет назад меня сбил КамАЗ и это стало неотъемлемой",
+            "confidence": 0.7152
+        },
+        {
+            "start_timecode": 11.46,
+            "end_timecode": 13.86,
+            "subtitle": "частью моего понимания жизни.",
+            "confidence": 0.4358
+        },
+        {
+            "start_timecode": 14.32,
+            "end_timecode": 18.38,
+            "subtitle": "Сами понимаете, как это отразилось на моем образе жизни,",
+            "confidence": 0.5898
+        },
+        {
+            "start_timecode": 19.72,
+            "end_timecode": 22.42,
+            "subtitle": "ведь после того, как меня сбил КамАЗ, мне тысячу",
+            "confidence": 0.7566
+        },
+        {
+            "start_timecode": 22.42,
+            "end_timecode": 26.26,
+            "subtitle": "лет пришлось восстанавливать свои кости и миллион лет думать о",
+            "confidence": 0.8268
+        },
+        {
+            "start_timecode": 26.26,
+            "end_timecode": 27.48,
+            "subtitle": "том, как мне жить дальше.",
+            "confidence": 0.76975
+        }
+    ]
+}
