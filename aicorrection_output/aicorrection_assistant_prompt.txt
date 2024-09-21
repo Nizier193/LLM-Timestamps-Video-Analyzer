@@ -1,0 +1,369 @@
+
+As an experienced subtitler, help me with the subtitles:
+
+Here are the subtitles:
+Subtitle Number: 1 Start time: 0.26, End time: 5.54, Subtitle: Следующая команда Сити, готовится команда Мадевиша., Confidence: 0.6088333333333333
+
+Subtitle Number: 2 Start time: 7.28, End time: 8.96, Subtitle: Здравствуйте, меня слышно., Confidence: 0.8076666666666666
+
+Subtitle Number: 3 Start time: 9.26, End time: 9.92, Subtitle: Да., Confidence: 0.893
+
+Subtitle Number: 4 Start time: 10.12, End time: 11.48, Subtitle: А презентация, видно?, Confidence: 0.6303333333333333
+
+Subtitle Number: 5 Start time: 11.82, End time: 12.2, Subtitle: Да., Confidence: 0.672
+
+Subtitle Number: 6 Start time: 12.5, End time: 15.32, Subtitle: Боюсь за своим принадлежным, у меня отвратительных сожелений., Confidence: 0.47225
+
+Subtitle Number: 7 Start time: 16.2, End time: 16.66, Subtitle: Это видно., Confidence: 0.502
+
+Subtitle Number: 8 Start time: 18.98, End time: 20.96, Subtitle: Приветствую из катитрии приключений., Confidence: 0.6875
+
+Subtitle Number: 9 Start time: 21.1, End time: 24.88, Subtitle: Мы в команда Ксити и мы представляем проект КУД ДАНЖЕНС., Confidence: 0.6947
+
+Subtitle Number: 10 Start time: 25.06, End time: 25.72, Subtitle: Такое название., Confidence: 0.6659999999999999
+
+Subtitle Number: 11 Start time: 25.72, End time: 27.72, Subtitle: Мы выбрали, конечно же, не просто так., Confidence: 0.934142857142857
+
+Subtitle Number: 12 Start time: 27.74, End time: 30.96, Subtitle: И сейчас я вкратся расскажу вам о нашем прототипе продукта., Confidence: 0.8593
+
+Subtitle Number: 13 Start time: 35.2, End time: 39.16, Subtitle: Представьте, что на уроке программирование вместо унылов отеста на бумажках., Confidence: 0.8489000000000001
+
+Subtitle Number: 14 Start time: 39.34, End time: 41.3, Subtitle: Учитель предлагает вам сыграть в игру., Confidence: 0.8913333333333333
+
+Subtitle Number: 15 Start time: 41.6, End time: 45.08, Subtitle: Уверен, что такие подростки, как я, будут ждать и готовиться, Confidence: 0.8737999999999999
+
+Subtitle Number: 16 Start time: 45.08, End time: 45.48, Subtitle: к такой игре., Confidence: 0.9006666666666666
+
+Subtitle Number: 17 Start time: 45.88, End time: 48.74, Subtitle: Ведь каждый из задач в тесте будет представлена в виде, Confidence: 0.8114000000000001
+
+Subtitle Number: 18 Start time: 48.74, End time: 50.36, Subtitle: ярких футбизинных образов., Confidence: 0.745
+
+Subtitle Number: 19 Start time: 50.56, End time: 54.26, Subtitle: Дополнена музыкой и уникальными репликами персонажей., Confidence: 0.8411666666666666
+
+Subtitle Number: 20 Start time: 54.38, End time: 57.96, Subtitle: Все тесты будут уникальны, а веселые группы и игроков будут, Confidence: 0.7764
+
+Subtitle Number: 21 Start time: 57.96, End time: 60.18, Subtitle: с каждым ходом все больше погружены в игру., Confidence: 0.742
+
+Subtitle Number: 22 Start time: 60.44, End time: 64.48, Subtitle: Результатом которого будет или проигрыш или количество подбежденных монстров., Confidence: 0.8085555555555556
+
+Subtitle Number: 23 Start time: 64.82, End time: 65.38, Subtitle: Представили?, Confidence: 0.976
+
+Subtitle Number: 24 Start time: 65.76, End time: 66.2, Subtitle: Да, да., Confidence: 0.9624999999999999
+
+Subtitle Number: 25 Start time: 66.48, End time: 68.38, Subtitle: Именно это и предполагает наше решение., Confidence: 0.8053333333333333
+
+Subtitle Number: 26 Start time: 68.62, End time: 73.6, Subtitle: Код Данжид, игра с элементами обучения подсказках, обернутая в красивую, Confidence: 0.6876
+
+Subtitle Number: 27 Start time: 73.6, End time: 74.82, Subtitle: генеративную оболочку., Confidence: 0.8145
+
+Subtitle Number: 28 Start time: 75.44, End time: 79.8, Subtitle: Прямо сейчас она решает проблему унылых тестов по программированию превращая, Confidence: 0.8551
+
+Subtitle Number: 29 Start time: 79.8, End time: 83.2, Subtitle: их фантастичную битву мира Данжинскан драйганс., Confidence: 0.635
+
+Subtitle Number: 30 Start time: 83.54, End time: 87.68, Subtitle: Однако следую о принципам масштабирования можно перестроить продукт в рамке, Confidence: 0.7586999999999999
+
+Subtitle Number: 31 Start time: 87.68, End time: 92.46, Subtitle: любого интеллектуального направления математика, химия и история все, что захотите, Confidence: 0.7798
+
+Subtitle Number: 32 Start time: 92.46, End time: 92.72, Subtitle: сами., Confidence: 0.92
+
+Subtitle Number: 33 Start time: 93.58, End time: 98.0, Subtitle: Если обстрагироваться от Код Данжинск, то наше решение является прекрасным, Confidence: 0.8096
+
+Subtitle Number: 34 Start time: 98.0, End time: 103.1, Subtitle: вариантом для проведения времени вместе, это элемент отрасливого тимбилдинго., Confidence: 0.8353333333333333
+
+Subtitle Number: 35 Start time: 103.8, End time: 107.94, Subtitle: Мы не предлагаем полностью заменить все подходы к тестированию, но, Confidence: 0.8667999999999999
+
+Subtitle Number: 36 Start time: 107.94, End time: 111.48, Subtitle: мы считаем, что внедрение нашего продукта может быть прекрасным его, Confidence: 0.9166000000000001
+
+Subtitle Number: 37 Start time: 111.48, End time: 112.1, Subtitle: дополнением., Confidence: 0.792
+
+Subtitle Number: 38 Start time: 112.86, End time: 115.96, Subtitle: Без лишних слов хочу сказать, что наш продукт отвечает всем, Confidence: 0.8629999999999999
+
+Subtitle Number: 39 Start time: 115.96, End time: 117.22, Subtitle: поставленным задачем., Confidence: 0.8205
+
+Subtitle Number: 40 Start time: 117.42, End time: 121.18, Subtitle: Мы подошли задачи творческие совдах с создав продукт, которые может, Confidence: 0.737
+
+Subtitle Number: 41 Start time: 121.18, End time: 125.24, Subtitle: быть внедрён обучения и будет интересен веселым компаниям., Confidence: 0.87325
+
+Subtitle Number: 42 Start time: 126.4, End time: 129.56, Subtitle: Все, что было сказано, это концепция нашего продукта, а сейчас, Confidence: 0.8675
+
+Subtitle Number: 43 Start time: 129.56, End time: 132.56, Subtitle: я расскажу, что продуктов внутри это моя любимая часть., Confidence: 0.847
+
+Subtitle Number: 44 Start time: 133.54, End time: 136.34, Subtitle: Маш собираемесь. Это то, что мы ставим, как одно из, Confidence: 0.7849
+
+Subtitle Number: 45 Start time: 136.34, End time: 141.02, Subtitle: наших движущих идеей, потому взаимезаменяемесь одной модели другой, это очень, Confidence: 0.8399000000000001
+
+Subtitle Number: 46 Start time: 141.02, End time: 141.34, Subtitle: важно., Confidence: 0.963
+
+Subtitle Number: 47 Start time: 141.82, End time: 146.48, Subtitle: Благодаря по-терну фабрике мы реализовали поддержку российских LLM таких, как, Confidence: 0.7645
+
+Subtitle Number: 48 Start time: 146.48, End time: 152.06, Subtitle: яндекс.GPT сделали возможным использовать аламы, как Элевым ЛАВС, как Тексту, Confidence: 0.6251
+
+Subtitle Number: 49 Start time: 152.06, End time: 152.38, Subtitle: спичь., Confidence: 0.573
+
+Subtitle Number: 50 Start time: 152.84, End time: 156.78, Subtitle: Все модели LLM работает с использованием проимворка ланчейн, что до, Confidence: 0.6835
+
+Subtitle Number: 51 Start time: 156.78, End time: 161.0, Subtitle: конкурентной преимущества от ладки моделей с помощью пип., Confidence: 0.68025
+
+Subtitle Number: 52 Start time: 162.14, End time: 164.74, Subtitle: Работа с моделями это всегда сложно, и мы подошли к, Confidence: 0.7807000000000001
+
+Subtitle Number: 53 Start time: 164.74, End time: 167.1, Subtitle: ней с новым решением от студии LLM смит., Confidence: 0.762875
+
+Subtitle Number: 54 Start time: 167.6, End time: 171.94, Subtitle: Для оплатки моделей была задействована методик LLM Трейсин, которая очень, Confidence: 0.7825
+
+Subtitle Number: 55 Start time: 171.94, End time: 173.52, Subtitle: удобно формать и дает понять,, Confidence: 0.6516
+
+Subtitle Number: 56 Start time: 174.4, End time: 179.26, Subtitle: работан запрос, как АМАДАЛЬ исполнись, как и входные данные были, Confidence: 0.5287
+
+Subtitle Number: 57 Start time: 179.26, End time: 181.48, Subtitle: поданы, и что мы получили на выходе?, Confidence: 0.8668571428571428
+
+Subtitle Number: 58 Start time: 181.76, End time: 182.9, Subtitle: Примеры насладят., Confidence: 0.6825
+
+Subtitle Number: 59 Start time: 184.9, End time: 189.2, Subtitle: Логика игры, интерфейсия нашей игры, логика которой с помощью функций, Confidence: 0.8387
+
+Subtitle Number: 60 Start time: 189.2, End time: 193.64, Subtitle: проекта прописана фрэморки стримлить, ходит сначала игрок, а затем искусственный, Confidence: 0.7519
+
+Subtitle Number: 61 Start time: 193.64, End time: 194.26, Subtitle: интеллект,, Confidence: 0.961
+
+Subtitle Number: 62 Start time: 194.36, End time: 198.3, Subtitle: однако в любой из ваших реализаций первым ходит тот, кого, Confidence: 0.7931
+
+Subtitle Number: 63 Start time: 198.3, End time: 199.76, Subtitle: выберите в и сами., Confidence: 0.6
+
+Subtitle Number: 64 Start time: 200.04, End time: 203.26, Subtitle: Мы вы записываем сидей с дейстой векторное хранение лишь хрома, Confidence: 0.5339
+
+Subtitle Number: 65 Start time: 203.26, End time: 205.0, Subtitle: и получаем реливантные события,, Confidence: 0.85975
+
+Subtitle Number: 66 Start time: 205.0, End time: 208.58, Subtitle: посад весь тую контекста, потому в вашей действии не окажется, Confidence: 0.6054999999999999
+
+Subtitle Number: 67 Start time: 208.58, End time: 209.12, Subtitle: в стороне., Confidence: 0.927
+
+Subtitle Number: 68 Start time: 209.94, End time: 213.72, Subtitle: Главная механика сражения сбосами с помощью кода, то о чем, Confidence: 0.8167
+
+Subtitle Number: 69 Start time: 213.72, End time: 216.12, Subtitle: я с трепетом рассказывал в начале презентации,, Confidence: 0.751
+
+Subtitle Number: 70 Start time: 216.44, End time: 220.38, Subtitle: самое интересное и в наших глазах имеющей прекрасные будущие., Confidence: 0.7853333333333333
+
+Subtitle Number: 71 Start time: 220.76, End time: 223.98, Subtitle: Давайте посмотрим на сегодняшнюю реализацию этого функционала., Confidence: 0.883
+
+Subtitle Number: 72 Start time: 225.06, End time: 230.48, Subtitle: Процессибоя игроковыводится типущая задача переписанная нерунными сетями на основе логчейм,, Confidence: 0.7252
+
+Subtitle Number: 73 Start time: 230.76, End time: 235.06, Subtitle: что встанется старпом для целых цепочек модификаций и усложнения логики., Confidence: 0.8160000000000001
+
+Subtitle Number: 74 Start time: 235.48, End time: 240.04, Subtitle: Игрок решает задачу и предоставляет код на проверку, где аналогичный, Confidence: 0.7998000000000001
+
+Subtitle Number: 75 Start time: 240.04, End time: 242.2, Subtitle: код варс проверяется на группе тестов., Confidence: 0.8416666666666667
+
+Subtitle Number: 76 Start time: 242.9, End time: 246.5, Subtitle: Игрок может попросить подсказку и не рассеть подскажет, как можно, Confidence: 0.9086000000000001
+
+Subtitle Number: 77 Start time: 246.5, End time: 248.48, Subtitle: изменить под для решения задачи., Confidence: 0.6988
+
+Subtitle Number: 78 Start time: 249.9, End time: 250.48, Subtitle: Можете вируяне?, Confidence: 0.22799999999999998
+
+Subtitle Number: 79 Start time: 251.14, End time: 255.12, Subtitle: Наше система не устареет, поскольку можно подключать новые генеративные модели,, Confidence: 0.7819
+
+Subtitle Number: 80 Start time: 255.52, End time: 260.4, Subtitle: будет существовать оптудей, которые даст генерируют все лучше и интереснее., Confidence: 0.8259000000000001
+
+Subtitle Number: 81 Start time: 260.94, End time: 265.16, Subtitle: Мы реализовали опти, содержащая более 20 метров, позволяющая не только, Confidence: 0.7942
+
+Subtitle Number: 82 Start time: 265.16, End time: 268.02, Subtitle: управлять самим процессом игрепашагов,, Confidence: 0.78
+
+Subtitle Number: 83 Start time: 268.4, End time: 271.78, Subtitle: а еще и добавлять свои собственные задачки из заниматься их, Confidence: 0.7837
+
+Subtitle Number: 84 Start time: 271.78, End time: 272.26, Subtitle: решением., Confidence: 0.913
+
+Subtitle Number: 85 Start time: 272.86, End time: 276.42, Subtitle: С него помещу можно построить любой интерфейс и развето там,, Confidence: 0.7815000000000001
+
+Subtitle Number: 86 Start time: 276.48, End time: 277.38, Subtitle: где захочется,, Confidence: 0.971
+
+Subtitle Number: 87 Start time: 277.76, End time: 281.76, Subtitle: на гитхове есть документация, которая позволит разобраться детально., Confidence: 0.883125
+
+Subtitle Number: 88 Start time: 282.48, End time: 286.48, Subtitle: Также мы докили завали наше решение, которое развеортует стремлитериализацию,, Confidence: 0.7028888888888889
+
+Subtitle Number: 89 Start time: 286.88, End time: 290.82, Subtitle: сопровождаемую контейнерам Аллама для работы локальных моделей., Confidence: 0.8064285714285714
+
+Subtitle Number: 90 Start time: 291.62, End time: 293.22, Subtitle: Ну и перспективы развития продукта., Confidence: 0.8346
+
+Subtitle Number: 91 Start time: 293.72, End time: 297.6, Subtitle: В догадаря АПИ мы можем вывести продукт на платформы, поддерживающие, Confidence: 0.7695000000000001
+
+Subtitle Number: 92 Start time: 297.6, End time: 298.02, Subtitle: игры,, Confidence: 0.903
+
+Subtitle Number: 93 Start time: 298.28, End time: 301.0, Subtitle: яндекс игры и чьё или даже с тем., Confidence: 0.680125
+
+Subtitle Number: 94 Start time: 301.66, End time: 304.48, Subtitle: Еще одна интереснейшая механика — это Эллам Фанкшинк,, Confidence: 0.62725
+
+Subtitle Number: 95 Start time: 305.1, End time: 309.48, Subtitle: которая позволит искусственному интеллекту полностью взять на себя управление игрой., Confidence: 0.8829
+
+Subtitle Number: 96 Start time: 309.82, End time: 314.34, Subtitle: Это даст новой интереснейшей истории и совершенно не призсказуемый интересный, Confidence: 0.7965
+
+Subtitle Number: 97 Start time: 314.34, End time: 314.7, Subtitle: результат., Confidence: 0.995
+
+Subtitle Number: 98 Start time: 315.5, End time: 318.66, Subtitle: Вот и наша команда, которая несколько суток не спала для, Confidence: 0.8637
+
+Subtitle Number: 99 Start time: 318.66, End time: 319.52, Subtitle: завершения работы., Confidence: 0.967
+
+Subtitle Number: 100 Start time: 320.34, End time: 321.92, Subtitle: И спасибо вам за внимание., Confidence: 0.9212
+
+Subtitle Number: 101 Start time: 323.06, End time: 325.82, Subtitle: Мы будем готов ответить на любое вашего вопроса и выслушать, Confidence: 0.6929000000000001
+
+Subtitle Number: 102 Start time: 325.82, End time: 326.76, Subtitle: вашей предложении., Confidence: 0.6325000000000001
+
+Subtitle Number: 103 Start time: 329.2, End time: 329.74, Subtitle: Класс., Confidence: 0.477
+
+Subtitle Number: 104 Start time: 329.96, End time: 331.0, Subtitle: Ухажаем за ней., Confidence: 0.7446666666666667
+
+Subtitle Number: 105 Start time: 333.78, End time: 335.6, Subtitle: Да, я подняд руку., Confidence: 0.6955
+
+Subtitle Number: 106 Start time: 335.76, End time: 339.04, Subtitle: Первый вопрос самоглавный, куда присылать офер,, Confidence: 0.7791666666666667
+
+Subtitle Number: 107 Start time: 339.36, End time: 341.16, Subtitle: владная шучевая, на другой вопрос., Confidence: 0.4368
+
+Subtitle Number: 108 Start time: 344.68, End time: 348.16, Subtitle: Фреднавизненно крутилим много всего, вижу у вас у ламов, вижу, Confidence: 0.5418999999999999
+
+Subtitle Number: 109 Start time: 348.16, End time: 349.11, Subtitle: у вас раги,, Confidence: 0.691
+
+Subtitle Number: 110 Start time: 349.11, End time: 350.52, Subtitle: запаковали все в контейнер., Confidence: 0.775
+
+Subtitle Number: 111 Start time: 350.52, End time: 354.62, Subtitle: Мое обращение, давайте так ошто делать со стишкой длинным окном, Confidence: 0.5517000000000001
+
+Subtitle Number: 112 Start time: 354.62, End time: 355.14, Subtitle: контекста,, Confidence: 0.796
+
+Subtitle Number: 113 Start time: 355.64, End time: 359.38, Subtitle: когда через рак нужно будет пропихивать новую слишком много и, Confidence: 0.7207
+
+Subtitle Number: 114 Start time: 359.38, End time: 362.13, Subtitle: это не будет вязать контекстное,, Confidence: 0.7146
+
+Subtitle Number: 115 Start time: 362.13, End time: 364.92, Subtitle: как вы решали подумать или вы об этом?, Confidence: 0.53475
+
+Subtitle Number: 116 Start time: 365.6, End time: 372.0, Subtitle: Мы чинкуем, поскольку у нас все фрагменты текста чинкуются и, Confidence: 0.825
+
+Subtitle Number: 117 Start time: 372.0, End time: 377.48, Subtitle: послаются соответственно после викторизации в хранили еще хромы,, Confidence: 0.5321250000000001
+
+Subtitle Number: 118 Start time: 378.58, End time: 382.5, Subtitle: но они подаются вместе в промпс, по соответствии в контекста., Confidence: 0.6721
+
+Subtitle Number: 119 Start time: 382.96, End time: 386.88, Subtitle: То есть из лекторной базы хрома у нас вычиняются ватаскиваются, Confidence: 0.7257
+
+Subtitle Number: 120 Start time: 386.88, End time: 387.87, Subtitle: после викторизации в контекста,, Confidence: 0.55325
+
+Subtitle Number: 121 Start time: 387.87, End time: 391.9, Subtitle: вот эти чинки и подаются напрямую в промпс модели., Confidence: 0.8283333333333334
+
+Subtitle Number: 122 Start time: 393.58, End time: 397.44, Subtitle: Понял, тогда другой вопрос в лово-восторивание и с мастишками выучемся., Confidence: 0.5236
+
+Subtitle Number: 123 Start time: 398.36, End time: 401.28, Subtitle: У вас это вырезает из ракков в паконтехста, я понял,, Confidence: 0.7338
+
+Subtitle Number: 124 Start time: 401.72, End time: 405.02, Subtitle: а ты не переживаешь из-за то, что у тебя потеряется, Confidence: 0.8337
+
+Subtitle Number: 125 Start time: 405.02, End time: 406.38, Subtitle: история,, Confidence: 0.858
+
+Subtitle Number: 126 Start time: 406.94, End time: 410.12, Subtitle: потому что по контексте может вынести то, что случилось два, Confidence: 0.7375
+
+Subtitle Number: 127 Start time: 410.12, End time: 410.76, Subtitle: шага назад., Confidence: 0.9295
+
+Subtitle Number: 128 Start time: 411.42, End time: 412.98, Subtitle: Безуссуфалька-соигра., Confidence: 0.24
+
+Subtitle Number: 129 Start time: 413.92, End time: 421.08, Subtitle: Безусловно мы рассматривали такой вариант, чтобы подавать модель в истории, Confidence: 0.7373000000000001
+
+Subtitle Number: 130 Start time: 421.08, End time: 421.48, Subtitle: у переписки,, Confidence: 0.5645
+
+Subtitle Number: 131 Start time: 422.08, End time: 425.76, Subtitle: предыдущие сообщения игрока, однако в этот раз мы решили по, Confidence: 0.7102999999999999
+
+Subtitle Number: 132 Start time: 425.76, End time: 426.4, Subtitle: экспериментировать,, Confidence: 0.68
+
+Subtitle Number: 133 Start time: 426.44, End time: 430.14, Subtitle: посмотреть какие результаты будут лучше и оставили такой вариант., Confidence: 0.9405555555555556
+
+Subtitle Number: 134 Start time: 432.88, End time: 435.34, Subtitle: Понял, я понял, я сказал, что было такое вариант, конечно., Confidence: 0.257
+
+Subtitle Number: 135 Start time: 436.16, End time: 437.82, Subtitle: Можно небольшого вопросов., Confidence: 0.5783333333333333
+
+Subtitle Number: 136 Start time: 438.66, End time: 442.66, Subtitle: Мы еще два сплэнной года назад, для написания сценарий в, Confidence: 0.7028
+
+Subtitle Number: 137 Start time: 442.66, End time: 443.08, Subtitle: Квизов,, Confidence: 0.588
+
+Subtitle Number: 138 Start time: 443.62, End time: 448.32, Subtitle: у Войли всех сценаристов, далее все это искусственного интеллекта., Confidence: 0.6291111111111111
+
+Subtitle Number: 139 Start time: 448.76, End time: 452.89, Subtitle: Когда мы говорим про данную игру и фэнта здесь сценарий,, Confidence: 0.7711
+
+Subtitle Number: 140 Start time: 452.89, End time: 456.13, Subtitle: то понятно, что нам какая-то фундаментальная,, Confidence: 0.7583333333333333
+
+Subtitle Number: 141 Start time: 456.13, End time: 461.34, Subtitle: знания, с точки зрения реальных фактов, нежневаженные,, Confidence: 0.6555714285714286
+
+Subtitle Number: 142 Start time: 461.42, End time: 464.21, Subtitle: но в одном из этапов, там развития, из Викторов,, Confidence: 0.6683333333333333
+
+Subtitle Number: 143 Start time: 464.21, End time: 468.78, Subtitle: вы видите, что будет хоть физик, хоть что-нибудь., Confidence: 0.4435
+
+Subtitle Number: 144 Start time: 469.26, End time: 471.22, Subtitle: На чём модель будет обучаться, точно,, Confidence: 0.5683333333333334
+
+Subtitle Number: 145 Start time: 472.68, End time: 477.48, Subtitle: как вы защищаете, и с того, что контент будет подтвержденной,, Confidence: 0.6942
+
+Subtitle Number: 146 Start time: 477.9, End time: 479.22, Subtitle: они из фантазированы., Confidence: 0.633
+
+Subtitle Number: 147 Start time: 479.82, End time: 483.78, Subtitle: То есть, вы говорите сейчас о том, что модель будет, Confidence: 0.8018000000000001
+
+Subtitle Number: 148 Start time: 483.78, End time: 484.48, Subtitle: переписывать задачи, Confidence: 0.7595000000000001
+
+Subtitle Number: 149 Start time: 484.72, End time: 486.36, Subtitle: и будет что-то галюционировать., Confidence: 0.94875
+
+Subtitle Number: 150 Start time: 487.52, End time: 488.48, Subtitle: Да, под галюционациям отели., Confidence: 0.4965
+
+Subtitle Number: 151 Start time: 490.38, End time: 492.48, Subtitle: Конкретно, поэтому вопросов, мы еще не задумались,, Confidence: 0.8501428571428571
+
+Subtitle Number: 152 Start time: 492.56, End time: 495.35, Subtitle: поскольку разрабатывали решение, конкретно,, Confidence: 0.8605
+
+Subtitle Number: 153 Start time: 495.35, End time: 499.48, Subtitle: работающие переписывающие задачи по программированию., Confidence: 0.7356
+
+Subtitle Number: 154 Start time: 500.84, End time: 502.34, Subtitle: Там она меньше всего галюционирует,, Confidence: 0.8468
+
+Subtitle Number: 155 Start time: 502.5, End time: 505.48, Subtitle: однако, как бы выразится., Confidence: 0.8342499999999999
+
+Subtitle Number: 156 Start time: 506.86, End time: 510.32, Subtitle: Мы, я как сказал, вы можете приносят и подать туда, Confidence: 0.6416000000000001
+
+Subtitle Number: 157 Start time: 510.32, End time: 511.0, Subtitle: любой тест,, Confidence: 0.9185
+
+Subtitle Number: 158 Start time: 512.06, End time: 514.12, Subtitle: и протыть любой тест со стоящей,, Confidence: 0.6305
+
+Subtitle Number: 159 Start time: 514.12, End time: 516.28, Subtitle: собственно из вопроса и ответа., Confidence: 0.8493999999999999
+
+Subtitle Number: 160 Start time: 519.08, End time: 520.3, Subtitle: Но вот конкретно по пере,, Confidence: 0.7236
+
+Subtitle Number: 161 Start time: 520.3, End time: 522.82, Subtitle: письез заданий мы об этом еще не задумывались., Confidence: 0.77625
+
+Subtitle Number: 162 Start time: 524.18, End time: 525.14, Subtitle: И если отвечать на вопрос,, Confidence: 0.6934
+
+Subtitle Number: 163 Start time: 525.68, End time: 526.47, Subtitle: он векторе развития,, Confidence: 0.5223333333333333
+
+Subtitle Number: 164 Start time: 526.47, End time: 528.64, Subtitle: то мы можете приночить и подавать вопрос и ответ., Confidence: 0.7071111111111111
+
+Subtitle Number: 165 Start time: 529.04, End time: 530.67, Subtitle: И он будет в UI отображаться,, Confidence: 0.802
+
+Subtitle Number: 166 Start time: 530.67, End time: 532.08, Subtitle: спрашиваться, переписываться,, Confidence: 0.8225
+
+Subtitle Number: 167 Start time: 532.12, End time: 532.92, Subtitle: определённым образом,, Confidence: 0.7855
+
+Subtitle Number: 168 Start time: 532.92, End time: 535.68, Subtitle: конкретно мы не проверяли можно или,, Confidence: 0.7645
+
+Subtitle Number: 169 Start time: 535.68, End time: 537.92, Subtitle: как бы, будет ли, переписываться правильно., Confidence: 0.8191666666666667
+
+Subtitle Number: 170 Start time: 538.38, End time: 541.86, Subtitle: Однако, ну мы можем надеяться на то,, Confidence: 0.6932857142857143
+
+Subtitle Number: 171 Start time: 541.86, End time: 543.86, Subtitle: что она не будет галюционировать, скажем так., Confidence: 0.8878571428571428
+
+Subtitle Number: 172 Start time: 544.22, End time: 545.36, Subtitle: Нет, ответ достаточно,, Confidence: 0.43333333333333335
+
+Subtitle Number: 173 Start time: 545.42, End time: 546.26, Subtitle: спасибо большое., Confidence: 0.6595
+
+Subtitle Number: 174 Start time: 548.76, End time: 550.22, Subtitle: Если есть еще один короткий вопрос,, Confidence: 0.7414999999999999
+
+Subtitle Number: 175 Start time: 550.38, End time: 551.2, Subtitle: или один дальше?, Confidence: 0.685
+
+Subtitle Number: 176 Start time: 552.7, End time: 553.42, Subtitle: Просто хотела сказать,, Confidence: 0.5363333333333333
+
+Subtitle Number: 177 Start time: 553.54, End time: 555.04, Subtitle: суперспособен за презентацию., Confidence: 0.62
+
+Subtitle Number: 178 Start time: 556.4, End time: 556.66, Subtitle: Спасибо., Confidence: 0.764
+
+Subtitle Number: 179 Start time: 557.42, End time: 558.28, Subtitle: Спасибо большое., Confidence: 0.6795
+
+
+
+The subtitles need to be properly timed with the video using correct time codes.
+You must correct the words in the subtitles if they do not exist in the English language or if they contain errors.
+Numerate the subtitles.
+
+Answer in JSON Format.

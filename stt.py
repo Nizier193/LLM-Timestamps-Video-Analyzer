@@ -47,10 +47,11 @@ class WhisperSTT:
         return result
             
 
-    def get_transcript_v2(self, audio_path: str, n_words_chunk: int = 10):
+    def get_transcript_v2(self, audio_path: str, n_words_chunk: int = 4):
         transcript = self.__call_whisper__(audio_path)
 
         result = []
+        subtitle_number = 1  # Инициализируем счетчик субтитров
 
         for chunk in transcript['segments']:
             for word_index in range(0, len(chunk['words']), n_words_chunk):
@@ -62,12 +63,14 @@ class WhisperSTT:
 
                 result.append(
                     {
+                        "subtitle_number": subtitle_number,  # Добавляем номер субтитра
                         "start_timecode": start_time,
                         "end_timecode": end_time,
                         "subtitle": word,
                         "confidence": confidence
                     }
                 )
+                subtitle_number += 1  # Увеличиваем счетчик для следующего субтитра
 
         return result
     

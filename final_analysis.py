@@ -48,10 +48,11 @@ Subtitles:
         
         if subtitles:
             subtitles_text = "\n".join(
-                "{start} --> {end}: {text}".format(
+                "{start} --> {end}; sub_number {n}: {text}".format(
                     start=sub['start_timecode'],
                     end=sub['end_timecode'],
-                    text=sub['subtitle']
+                    text=sub['subtitle'],
+                    n=sub["subtitle_number"]
                 ) for sub in subtitles
             )
         else:
@@ -70,28 +71,62 @@ Subtitles:
     return "\n\n".join(analysis_fragments)
 
 class Fragment(BaseModel):
+    title: str
     start_timecode: float
     end_timecode: float
-    title: str
+    used_subtitles: list[int]
 
 class InterestingMoments(BaseModel):
     fragments: List[Fragment]
 
 class VideoAnalysisBySubtitles():
-    analysis_prompt = """
-Ты - ассистент, который анализирует видео и субтитры.
+    analysis_prompt_1 = """
+Ты - редактор видео, который анализирует видео и субтитры и создаёт популярные клипы.
 Выбери ТРИ самых интересных фрагмента из видео по приведенным фрагментам анализа.
 
 При выборе фрагмента следуй правилам:
-1. Аккуратно обращайся с таймкодами, они должны быть МАКСИМАЛЬНО точными.
-2. Ты можешь выбирать таймкоды только по субтитрам, иначе выбери видеофрагмент.
-3. Итоговый фрагмент не должен быть длиннее 1 минуты.
+1. Аккуратно обращайся с таймкодами, они должны быть МАКСИМАЛЬНО ТОЧНЫМИ.
+2. Ты можешь выбирать таймкоды только по субтитрам.
+3. Итоговый фрагмент не должен быть длиннее 1 минуты и не менее 30 секунд.
 4. Таймкоды фрагментов должны включать полные предложения.
-5. Если можно объединить несколько фрагментов в один для получения более интересного фрагмента - объединяй.
+5. Субтитры в клипе обязательно должны иметь смысл и быть взаимосвязанными.
+6. Отбрасывай клип, если предложение не имеет смысла или непонятен его контекст.
+
+Дай каждому клипу небольшой уникальный заголовок не длиннее 3 слов.
+Укажи номера субтитров, которые использовал
 
 Выведи ответ в формате JSON.
     """
 
+    analysis_prompt_2 = """
+Ты - редактор видео, который анализирует видео и субтитры и создаёт популярные клипы.
+Твоя цель проанализировать три выбранных клипа, предложенных другим ассистентом.
+
+При анализе клипов следуй правилам:
+1. Аккуратно обращайся с таймкодами субтитров, они должны быть МАКСИМАЛЬНО ТОЧНЫМИ.
+2. Исправь ошибки в таймкодах, если они есть.
+3. Исправь таймкод, если текст неполный или не несёт никакого смысла.
+4. Увеличь клип если это сделает клип интереснее.
+
+Дай каждому клипу небольшой уникальный заголовок не длиннее 3 слов.
+Укажи номера субтитров, которые использовал
+
+Выведи ответ в формате JSON.
+    """
+
+    redact_prompt = """
+Как опытный монтажёр, помоги мне найти ТРИ самых интересных момента из видео.
+Найди такие клипы, которые несут максимальную смысловую нагрузку.
+
+{client_wants}
+
+Вот информация о видео:
+{video_analysis}
+
+{assistant_analysis}
+
+Выведи ответ в формате JSON.
+"""
     def __init__(self, video_interval: int = 10, resize_factor: int = 30):
         self.video_analysis = VideoAnalysis(
             interval_seconds=video_interval,
@@ -197,13 +232,40 @@ class VideoAnalysisBySubtitles():
         except Exception as e:
             print(f"An error occurred while cropping video: {str(e)}")
         
+    def ai_analyzer(self, text: str, prompt: str, response_format: BaseModel) -> tuple[list[dict], int, int, int]:
+        completion = self.client.beta.chat.completions.parse(
+            model="gpt-4o-2024-08-06",
+
+            messages=[
+                {
+                    "role": "system",
+                    "content": prompt
+                },
+                {
+                    "role": "user",
+                    "content": text
+                }
+            ],
+            response_format=response_format
+        )
+
+        return (
+            json.loads(completion.choices[0].message.content), 
+            completion.usage.completion_tokens, 
+            completion.usage.prompt_tokens, 
+            completion.usage.total_tokens
+        )
+
 
     def run(self, 
             output_dir: str, 
             source: str = Source.Local, 
             video_path: str = None, 
-            youtube_video_url: str = None) -> None:
-        
+            youtube_video_url: str = None,
+            client_wants: str = "") -> None:
+        # TODO: Сделать параметр cut_every_seconds, который будет разрезать исходное видео на фрагменты по N секунд 
+        # если оно больше N секунд
+
         if source == Source.Local:
             uuid = self.local_analysis(output_dir, video_path)
         elif source == Source.Youtube:
@@ -216,38 +278,61 @@ class VideoAnalysisBySubtitles():
         output_json_concat = f"{output_dir}/{uuid}-concat.json"
         output_json_interesting_moments = f"{output_dir}/{uuid}-interesting_moments.json"
 
+        # Конкантенация субтитров с видео
         analysis = self.video_subtitles_concat(
             video_analysis_json=f"{output_dir}/{uuid}-video.json",
             subtitles_json=f"{output_dir}/{uuid}-subtitles.json",
             output_json=f"{output_dir}/{uuid}-concat.json"
         )
-
         concat_analysis = json.load(open(output_json_concat, 'r', encoding='utf-8'))
-        analysis_text = format_analysis_text(concat_analysis)
+        subtitles = json.load(open(output_json_subtitles, 'r', encoding='utf-8'))['subtitles']
 
-        completion = self.client.beta.chat.completions.parse(
-            model="gpt-4o-2024-08-06",
-            messages=[
-                {
-                    "role": "system",
-                    "content": self.analysis_prompt
-                },
-                {
-                    "role": "user",
-                    "content": f"Here is the analysis data: \n{analysis_text}"
-                }
-            ],
+        # Анализ первым ассистентом
+        analysis_text = format_analysis_text(concat_analysis)
+        analysis_text_assistant = ""
+        first_assistant_prompt = self.redact_prompt.format(
+                video_analysis=analysis_text,
+                assistant_analysis=analysis_text_assistant,
+                client_wants=client_wants
+            )
+        open(f"{output_dir}/first_assistant_prompt.txt", "w", encoding="utf-8").write(first_assistant_prompt)
+
+        analysis, completion_tokens, prompt_tokens, total_tokens = self.ai_analyzer(
+            text=first_assistant_prompt,
+            prompt=self.analysis_prompt_1,
+            response_format=InterestingMoments
+        )
+        # Анализ вторым ассистентом
+        analysis_text_assistant = "Вот клипы, которые создал первый ассистент:\n"
+        for item in analysis['fragments']:
+            used_subtitles = item['used_subtitles']
+            subs = ""
+            for num in used_subtitles:
+                subs += " ".join([j['subtitle'] for j in subtitles if j['subtitle_number'] == num])
+
+            analysis_text_assistant += f"Fragment {item['title']}:\n"
+            analysis_text_assistant += f"Start: {item['start_timecode']}\n"
+            analysis_text_assistant += f"End: {item['end_timecode']}\n"
+            analysis_text_assistant += f"Текст фрагмента: {subs}\n"
+            analysis_text_assistant += f"Субтитры использованные: {', '.join(list(map(lambda x: str(x), item['used_subtitles'])))}\n"
+            analysis_text_assistant += 40 * "=" + "\n\n"
+
+        # for testing purposes
+        second_assistant_prompt = self.redact_prompt.format(
+                video_analysis=analysis_text,
+                assistant_analysis=analysis_text_assistant,
+                client_wants=client_wants
+            )
+        open(f"{output_dir}/second_assistant_prompt.txt", "w", encoding="utf-8").write(second_assistant_prompt)
+
+        analysis, completion_tokens, prompt_tokens, total_tokens = self.ai_analyzer(
+            text=second_assistant_prompt,
+            prompt=self.analysis_prompt_2,
             response_format=InterestingMoments
         )
 
-        completion_tokens = completion.usage.completion_tokens
-        prompt_tokens = completion.usage.prompt_tokens
-        total_tokens = completion.usage.total_tokens
-
-        analysis = completion.choices[0].message.content
-        json_file = json.loads(analysis)
-
-        for fragment in json_file['fragments']:
+        # Кроп видео
+        for fragment in analysis['fragments']:
             self.crop_video(
                 video_path=video_path,
                 start_timecode=fragment['start_timecode'],
@@ -255,7 +340,9 @@ class VideoAnalysisBySubtitles():
                 output_path=f"{output_dir}/{uuid}-{fragment['title']}.mp4"
             )
 
+        # Сохранение результатов анализа
         with open(output_json_interesting_moments, 'w', encoding='utf-8') as output_file:
-            json.dump(json_file, output_file, ensure_ascii=False, indent=4)
+            json.dump(analysis, output_file, ensure_ascii=False, indent=4)
 
-        return json_file
+        return analysis
+
