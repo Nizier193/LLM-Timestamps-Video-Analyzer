@@ -98,11 +98,17 @@ class SubtitlesAnalysis():
 
     def AI_analysis(self, subtitles: List[dict]):
         corrector = AICorrection()
-        corrected_subtitles = corrector.run(subtitles)
+        corrected_subtitles, total_tokens = corrector.run(subtitles)
 
-        return corrected_subtitles
+        return corrected_subtitles, total_tokens
 
-    def run(self, output_json: str, source: str = Source.Local, video_path: str = None, youtube_video_url: str = None) -> List[dict]:
+    def run(self, 
+            output_json: str, 
+            source: str = Source.Local, 
+            video_path: str = None, 
+            youtube_video_url: str = None,
+            interval_seconds: int = 300
+        ) -> List[dict]:
         """
         Анализ субтитров. Возвращает json-объект с субтитрами.
         """
@@ -114,9 +120,9 @@ class SubtitlesAnalysis():
         else:
             raise ValueError(f"Invalid source: {source}")
 
-        analysis = self.AI_analysis(subtitles)
+        analysis, total_tokens = self.AI_analysis(subtitles)
 
         with open(output_json, 'w', encoding='utf-8') as json_file:
             json.dump(analysis, json_file, ensure_ascii=False, indent=4)
 
-        return analysis
+        return analysis, total_tokens

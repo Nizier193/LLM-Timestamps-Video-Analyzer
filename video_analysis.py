@@ -29,12 +29,11 @@ class VideoAnalysis():
     Анализ видео.
     Берёт кадры из видео и анализирует их.
     """
-    def __init__(self, interval_seconds: int = 1, api_key: str = None, resize_factor: int = 10):
+    def __init__(self, api_key: str = None, resize_factor: int = 1):
         self.image_analysis = ImageAnalysis(
             api_key=api_key,
             resize_factor=resize_factor
         )
-        self.interval_seconds = interval_seconds
         print("[VideoAnalysis] - [__init__] - Initialized VideoAnalysis class")
 
     def yt_download(self, yt_vid_url: str, mp4_dir_save_path: str) -> str:
@@ -63,11 +62,22 @@ class VideoAnalysis():
         print(f"[VideoAnalysis] - [yt_download] - Downloaded video to {video_file}")
         return str(video_file)  # Return path to file
 
+    def make_analysis_text(self, analysis_results: List[dict]) -> str:
+        analysis_text = ""
+        for fragment in analysis_results:
+            analysis_text += f"Стартовый таймкод: {fragment['start_timecode']}\n"
+            analysis_text += f"Конечный таймкод: {fragment['end_timecode']}\n"
+            analysis_text += f"Анализ: {fragment['analysis']}\n"
+            analysis_text += "\n"
+        return analysis_text
+
     def run(self, 
             output_json: str, 
             source: str = Source.Local, 
             video_path: str = None, 
-            youtube_video_url: str = None) -> List[dict]:
+            youtube_video_url: str = None,
+            resize_factor: int = 1,
+            interval_seconds: int = 1) -> List[dict]:
         print(f"[VideoAnalysis] - [run] - Starting video analysis with source: {source}")
 
         if source == Source.Local:
@@ -84,41 +94,65 @@ class VideoAnalysis():
             raise ValueError(f"Invalid source: {source}")
         
         fps = cap.get(cv2.CAP_PROP_FPS)
-        frame_step = int(fps * self.interval_seconds)  # Calculate frame_step based on interval_seconds
-        frame_count = 0
-        previous_scene = None
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        interval_frames = int(fps * interval_seconds)
+        frames_per_analysis = 16
+        frame_step = interval_frames // frames_per_analysis
+        
+        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        
         analysis_results = []
-
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                print("[VideoAnalysis] - [run] - End of video reached or cannot read frame")
-                break
-
-            if frame_count % frame_step == 0:
-                # Преобразуем кадр из BGR (OpenCV) в RGB (PIL)
+        
+        total_tokens = 0
+        for start_frame in range(0, total_frames, interval_frames):
+            combined_image = Image.new('RGB', (frame_width * 4, frame_height * 4))
+            
+            timecodes = []
+            for i in range(frames_per_analysis):
+                frame_position = start_frame + i * frame_step
+                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_position)
+                ret, frame = cap.read()
+                
+                if not ret:
+                    print(f"[VideoAnalysis] - [run] - End of video reached at frame {frame_position}")
+                    break
+                
                 rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 pil_image = Image.fromarray(rgb_frame)
-
-                # Анализируем кадр
-                analysis = self.image_analysis.analyze(pil_image, scene=previous_scene)
                 
-                # Формируем таймкоды
-                start_time = self.format_timecode(frame_count / fps)
-                end_time = self.format_timecode((frame_count + frame_step) / fps)
-
-                # Добавляем результат анализа в список
-                analysis_results.append({
-                    "start_timecode": start_time,
-                    "end_timecode": end_time,
-                    "analysis": analysis
-                })
-
-                print(f"[VideoAnalysis] - [run] - Analyzed frame at {start_time} to {end_time}")
-
-                previous_scene = analysis
-
-            frame_count += 1
+                # Расположение кадра в сетке 4x4
+                x = (i % 4) * frame_width
+                y = (i // 4) * frame_height
+                combined_image.paste(pil_image, (x, y))
+                
+                # Добавляем таймкод для текущего кадра
+                timecode = self.format_timecode(frame_position / fps)
+                timecodes.append(timecode)
+            
+            # Анализ объединенного изображения
+            combined_image.show()
+            analysis, total_tokens_per_image = self.image_analysis.analyze(
+                combined_image,
+                prompt_params={
+                    "scene": self.make_analysis_text(analysis_results),
+                    "timecodes": timecodes
+                },
+                resize_factor=resize_factor
+            )
+            total_tokens += total_tokens_per_image
+            
+            start_time = self.format_timecode(start_frame / fps)
+            end_time = self.format_timecode((start_frame + interval_frames) / fps)
+            
+            analysis_results.append({
+                "start_timecode": start_time,
+                "end_timecode": end_time,
+                "analysis": analysis,
+                "image_timecodes": timecodes
+            })
+            
+            print(f"[VideoAnalysis] - [run] - Analyzed combined frame from {start_time} to {end_time}")
 
         cap.release()
         print("[VideoAnalysis] - [run] - Released video capture")
@@ -128,7 +162,7 @@ class VideoAnalysis():
             json.dump(analysis_results, json_file, ensure_ascii=False, indent=4)
             print(f"[VideoAnalysis] - [run] - Saved analysis results to {output_json}")
 
-        return analysis_results
+        return analysis_results, total_tokens
 
     @staticmethod
     def format_timecode(seconds: float) -> str:

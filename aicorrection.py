@@ -77,4 +77,4 @@ Answer in JSON Format.
         analysis = response.choices[0].message.content
         parsed_response_content = json.loads(analysis)
 
-        return parsed_response_content
+        return parsed_response_content, total_tokens

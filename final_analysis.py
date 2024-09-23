@@ -24,6 +24,7 @@ from moviepy.editor import VideoFileClip
 
 import yt_dlp
 from pathlib import Path
+import time
 
 load_dotenv()
 
@@ -33,7 +34,17 @@ Fragment {index}:
 {separator}
 Video: {video_start} --> {video_end}
 ---
-{video_analysis}
+Сцена и главные герои:
+{scene_and_main_characters}
+
+Что происходит:
+{what_is_happening}
+
+Что интересно:
+{what_is_interesting}
+
+Интересен ли фрагмент:
+{is_interesting}
 ---
 Subtitles:
 {subtitles}
@@ -44,6 +55,7 @@ Subtitles:
     analysis_fragments = []
     for index, item in enumerate(concat_analysis[start_fragment - 1:start_fragment+n_fragments], start_fragment):
         video = item["video_analysis"]
+        video_analysis_dict = video["analysis"]
         subtitles = item["subtitles_analysis"]
         
         if subtitles:
@@ -63,7 +75,10 @@ Subtitles:
             separator=separator,
             video_start=video['start_timecode'],
             video_end=video['end_timecode'],
-            video_analysis=video['analysis'],
+            scene_and_main_characters=video_analysis_dict["scene_and_main_characters"],
+            what_is_happening=video_analysis_dict["what_is_happening"],
+            what_is_interesting=video_analysis_dict["what_is_interesting"],
+            is_interesting=video_analysis_dict["is_interesting"],
             subtitles=subtitles_text
         )
         analysis_fragments.append(fragment)
@@ -117,11 +132,15 @@ class VideoAnalysisBySubtitles():
     redact_prompt = """
 Как опытный монтажёр, помоги мне найти ТРИ самых интересных момента из видео.
 Найди такие клипы, которые несут максимальную смысловую нагрузку.
+Тебе будут предложены фрагменты, которые являются самыми интересными, 
+но некоторые из них могут быть не очень интересными, их можно отбрасывать.
 
+Придерживайся пожеланий клиента к интересным фрагментам:
 {client_wants}
 
 Вот информация о видео:
 {video_analysis}
+
 
 {assistant_analysis}
 
@@ -129,7 +148,6 @@ class VideoAnalysisBySubtitles():
 """
     def __init__(self, video_interval: int = 10, resize_factor: int = 30):
         self.video_analysis = VideoAnalysis(
-            interval_seconds=video_interval,
             resize_factor=resize_factor
         )
         self.subtitles_analysis = SubtitlesAnalysis()
@@ -176,55 +194,51 @@ class VideoAnalysisBySubtitles():
         seconds, milliseconds = seconds.split(',')
         return int(hours) * 3600 + int(minutes) * 60 + int(seconds) + int(milliseconds) / 1000
 
-    def local_analysis(self, output_dir: str, video_path: str) -> None:
+    def local_analysis(self, output_dir: str, video_path: str, cut_by_seconds: int = 300) -> None:
         uuid = str(uuid4())
         os.makedirs(output_dir, exist_ok=True)
 
-        video_analysis = self.video_analysis.run(
+        video_analysis, total_tokens_video = self.video_analysis.run(
             source=Source.Local,
             video_path=video_path,
-            output_json=f"{output_dir}/{uuid}-video.json"
+            output_json=f"{output_dir}/{uuid}-video.json",
+            interval_seconds=cut_by_seconds
         )
 
-        subtitles_analysis = self.subtitles_analysis.run(
+        subtitles_analysis, total_tokens_subtitles = self.subtitles_analysis.run(
             source=Source.Local,
             video_path=video_path,
             output_json=f"{output_dir}/{uuid}-subtitles.json"
         )
 
-        return uuid
+        return uuid, total_tokens_video + total_tokens_subtitles
 
-    def youtube_analysis(self, output_dir: str, youtube_video_url: str) -> None:
+    def youtube_analysis(self, output_dir: str, youtube_video_url: str, cut_by_seconds: int = 300) -> None:
         uuid = str(uuid4())
         os.makedirs(output_dir, exist_ok=True)
 
-        video_analysis = self.video_analysis.run(
+        video_analysis, total_tokens_video = self.video_analysis.run(
             output_json=f"{output_dir}/{uuid}-video.json",
             source=Source.Youtube,
-            youtube_video_url=youtube_video_url
+            youtube_video_url=youtube_video_url,
+            interval_seconds=cut_by_seconds
         )
 
-        audio_analysis = self.subtitles_analysis.run(
+        subtitles_analysis, total_tokens_subtitles = self.subtitles_analysis.run(
             output_json=f"{output_dir}/{uuid}-subtitles.json",
             source=Source.Youtube,
             youtube_video_url=youtube_video_url
         )
 
-        return uuid
+        return uuid, total_tokens_video + total_tokens_subtitles
     
 
     def crop_video(self, video_path: str, start_timecode: float, end_timecode: float, output_path: str) -> None:
         try:
-            # Загружаем видео
             video = VideoFileClip(video_path)
-            
-            # Обрезаем видео
             cropped_video = video.subclip(start_timecode, end_timecode)
-            
-            # Сохраняем обрезанное видео
             cropped_video.write_videofile(output_path)
             
-            # Закрываем видео файлы
             video.close()
             cropped_video.close()
             
@@ -255,21 +269,84 @@ class VideoAnalysisBySubtitles():
             completion.usage.prompt_tokens, 
             completion.usage.total_tokens
         )
+    
+    def first_assistant_analyze(self, 
+            concat_analysis: list[dict], 
+            client_wants: str,
+            output_dir: str
+        ) -> tuple[list[dict], int, int, int]:
+        # Анализ первым ассистентом
+        analysis_text = format_analysis_text(concat_analysis)
+        analysis_text_assistant = ""
+        first_assistant_prompt = self.redact_prompt.format(
+            video_analysis=analysis_text,
+            assistant_analysis=analysis_text_assistant,
+            client_wants=client_wants
+        )
+        open(f"{output_dir}/first_assistant_prompt.txt", "w", encoding="utf-8").write(first_assistant_prompt)
 
+        analysis, completion_tokens, prompt_tokens, total_tokens_analysis_1 = self.ai_analyzer(
+            text=first_assistant_prompt,
+            prompt=self.analysis_prompt_1,
+            response_format=InterestingMoments
+        )
+
+        return analysis, completion_tokens, prompt_tokens, total_tokens_analysis_1
+    
+    def second_assistant_analyze(self, 
+            concat_analysis: list[dict], 
+            client_wants: str,
+            output_dir: str,
+            subtitles: list[dict],
+            assistant_analysis: list[dict]
+        ) -> tuple[list[dict], int, int, int]:
+        # Анализ вторым ассистентом
+        analysis_text = format_analysis_text(concat_analysis)
+        analysis_text_assistant = "Вот клипы, которые создал первый ассистент:\n"
+        for item in assistant_analysis['fragments']:
+            used_subtitles = item['used_subtitles']
+            subs = ""
+            for num in used_subtitles:
+                subs += " ".join([j['subtitle'] for j in subtitles if j['subtitle_number'] == num])
+
+            analysis_text_assistant += f"Fragment {item['title']}:\n"
+            analysis_text_assistant += f"Start: {item['start_timecode']}\n"
+            analysis_text_assistant += f"End: {item['end_timecode']}\n"
+            analysis_text_assistant += f"Текст фрагмента: {subs}\n"
+            analysis_text_assistant += f"Субтитры использованные: {', '.join(list(map(lambda x: str(x), item['used_subtitles'])))}\n"
+            analysis_text_assistant += 40 * "=" + "\n\n"
+
+        # for testing purposes
+        second_assistant_prompt = self.redact_prompt.format(
+            video_analysis=analysis_text,
+            assistant_analysis=analysis_text_assistant,
+            client_wants=client_wants
+        )
+        open(f"{output_dir}/second_assistant_prompt.txt", "w", encoding="utf-8").write(second_assistant_prompt)
+
+        analysis, completion_tokens, prompt_tokens, total_tokens_analysis_2 = self.ai_analyzer(
+            text=second_assistant_prompt,
+            prompt=self.analysis_prompt_2,
+            response_format=InterestingMoments
+        )
+
+        return analysis, completion_tokens, prompt_tokens, total_tokens_analysis_2
 
     def run(self, 
             output_dir: str, 
             source: str = Source.Local, 
             video_path: str = None, 
             youtube_video_url: str = None,
-            client_wants: str = "") -> None:
-        # TODO: Сделать параметр cut_every_seconds, который будет разрезать исходное видео на фрагменты по N секунд 
-        # если оно больше N секунд
+            client_wants: str = "",
+            cut_by_seconds: int = 300 # 5 minutes
+        ) -> None:
+
+        start_time = time.time()
 
         if source == Source.Local:
-            uuid = self.local_analysis(output_dir, video_path)
+            uuid, total_tokens_video = self.local_analysis(output_dir, video_path, cut_by_seconds)
         elif source == Source.Youtube:
-            uuid = self.youtube_analysis(output_dir, youtube_video_url)
+            uuid, total_tokens_video = self.youtube_analysis(output_dir, youtube_video_url, cut_by_seconds)
         else:
             raise ValueError(f"Invalid source: {source}")
             
@@ -287,48 +364,18 @@ class VideoAnalysisBySubtitles():
         concat_analysis = json.load(open(output_json_concat, 'r', encoding='utf-8'))
         subtitles = json.load(open(output_json_subtitles, 'r', encoding='utf-8'))['subtitles']
 
-        # Анализ первым ассистентом
-        analysis_text = format_analysis_text(concat_analysis)
-        analysis_text_assistant = ""
-        first_assistant_prompt = self.redact_prompt.format(
-                video_analysis=analysis_text,
-                assistant_analysis=analysis_text_assistant,
-                client_wants=client_wants
-            )
-        open(f"{output_dir}/first_assistant_prompt.txt", "w", encoding="utf-8").write(first_assistant_prompt)
-
-        analysis, completion_tokens, prompt_tokens, total_tokens = self.ai_analyzer(
-            text=first_assistant_prompt,
-            prompt=self.analysis_prompt_1,
-            response_format=InterestingMoments
+        analysis, completion_tokens, prompt_tokens, total_tokens_analysis_1 = self.first_assistant_analyze(
+            concat_analysis=concat_analysis,
+            client_wants=client_wants,
+            output_dir=output_dir
         )
-        # Анализ вторым ассистентом
-        analysis_text_assistant = "Вот клипы, которые создал первый ассистент:\n"
-        for item in analysis['fragments']:
-            used_subtitles = item['used_subtitles']
-            subs = ""
-            for num in used_subtitles:
-                subs += " ".join([j['subtitle'] for j in subtitles if j['subtitle_number'] == num])
 
-            analysis_text_assistant += f"Fragment {item['title']}:\n"
-            analysis_text_assistant += f"Start: {item['start_timecode']}\n"
-            analysis_text_assistant += f"End: {item['end_timecode']}\n"
-            analysis_text_assistant += f"Текст фрагмента: {subs}\n"
-            analysis_text_assistant += f"Субтитры использованные: {', '.join(list(map(lambda x: str(x), item['used_subtitles'])))}\n"
-            analysis_text_assistant += 40 * "=" + "\n\n"
-
-        # for testing purposes
-        second_assistant_prompt = self.redact_prompt.format(
-                video_analysis=analysis_text,
-                assistant_analysis=analysis_text_assistant,
-                client_wants=client_wants
-            )
-        open(f"{output_dir}/second_assistant_prompt.txt", "w", encoding="utf-8").write(second_assistant_prompt)
-
-        analysis, completion_tokens, prompt_tokens, total_tokens = self.ai_analyzer(
-            text=second_assistant_prompt,
-            prompt=self.analysis_prompt_2,
-            response_format=InterestingMoments
+        analysis, completion_tokens, prompt_tokens, total_tokens_analysis_2 = self.second_assistant_analyze(
+            concat_analysis=concat_analysis,
+            client_wants=client_wants,
+            output_dir=output_dir,
+            subtitles=subtitles,
+            assistant_analysis=analysis
         )
 
         # Кроп видео
@@ -344,5 +391,22 @@ class VideoAnalysisBySubtitles():
         with open(output_json_interesting_moments, 'w', encoding='utf-8') as output_file:
             json.dump(analysis, output_file, ensure_ascii=False, indent=4)
 
-        return analysis
+        time_consumed = time.time() - start_time
+        return (
+            analysis, 
+            total_tokens_video + total_tokens_analysis_1 + total_tokens_analysis_2,
+            time_consumed
+        )
+
+
+vabs = VideoAnalysisBySubtitles(
+    video_interval=60,
+)
+
+print(vabs.run(
+    output_dir='output_files_example4',
+    source=Source.Local,
+    video_path='input_files/example3.mp4',
+    client_wants="Сделай клипы где Никита рассказывает о своей жизни после того, как его сбил комбайн.",
+))
 
